@@ -15,14 +15,14 @@ type FilterWriter struct {
 var _ io.WriteCloser = (*FilterWriter)(nil) //FilterWriter is compatible with io.WriteCloser interface
 
 //Filter returns new FilterWriter instance
-func Filter(keyword string, w io.Writer) *FilterWriter {
+func Filter(keyword []byte, w io.Writer) *FilterWriter {
 	if w == nil {
 		w = ioutil.Discard
 	}
-	if keyword == "" {
+	if len(keyword) == 0 {
 		return &FilterWriter{word: nil, writer: w}
 	}
-	return &FilterWriter{word: []byte(keyword), writer: w}
+	return &FilterWriter{word: keyword, writer: w}
 }
 
 //Write function writes bytes data, and compatible with io.Writer interface.

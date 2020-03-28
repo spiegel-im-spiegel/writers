@@ -7,15 +7,15 @@ import (
 
 func TestFilterWriter(t *testing.T) {
 	testCases := []struct {
-		key  string
+		key  []byte
 		inp  string
 		outp string
 		err  error
 	}{
-		{key: "", inp: "", outp: "", err: nil},
-		{key: "", inp: "Hello world", outp: "Hello world", err: nil},
-		{key: "wo", inp: "Hello world", outp: "Hello world", err: nil},
-		{key: "foo", inp: "Hello world", outp: "", err: nil},
+		{key: nil, inp: "", outp: "", err: nil},
+		{key: []byte{}, inp: "Hello world", outp: "Hello world", err: nil},
+		{key: []byte("wo"), inp: "Hello world", outp: "Hello world", err: nil},
+		{key: []byte("foo"), inp: "Hello world", outp: "", err: nil},
 	}
 
 	for _, tc := range testCases {

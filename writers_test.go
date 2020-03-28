@@ -8,13 +8,13 @@ import (
 
 func TestWriters(t *testing.T) {
 	testCases := []struct {
-		key1, key2, key3    string
+		key1, key2, key3    []byte
 		inp                 string
 		outp1, outp2, outp3 string
 		err                 error
 	}{
-		{key1: "", key2: "wo", key3: "foo", inp: "", outp1: "", outp2: "", outp3: "", err: nil},
-		{key1: "", key2: "wo", key3: "foo", inp: "Hello world", outp1: "Hello world", outp2: "Hello world", outp3: "", err: nil},
+		{key1: nil, key2: []byte("wo"), key3: []byte("foo"), inp: "", outp1: "", outp2: "", outp3: "", err: nil},
+		{key1: []byte{}, key2: []byte("wo"), key3: []byte("foo"), inp: "Hello world", outp1: "Hello world", outp2: "Hello world", outp3: "", err: nil},
 	}
 
 	for _, tc := range testCases {
