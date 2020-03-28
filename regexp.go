@@ -27,7 +27,7 @@ func (w *RegexpWriter) Write(b []byte) (int, error) {
 	if w.match(b) {
 		return w.writer.Write(b)
 	}
-	return 0, nil
+	return len(b), nil
 }
 
 func (w *RegexpWriter) match(b []byte) bool {

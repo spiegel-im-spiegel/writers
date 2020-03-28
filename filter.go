@@ -30,7 +30,7 @@ func (w *FilterWriter) Write(b []byte) (int, error) {
 	if w.match(b) {
 		return w.writer.Write(b)
 	}
-	return 0, nil
+	return len(b), nil
 }
 
 func (w *FilterWriter) match(b []byte) bool {
