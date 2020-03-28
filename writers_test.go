@@ -76,6 +76,31 @@ func TestWritersString(t *testing.T) {
 	}
 }
 
+func TestWriter1(t *testing.T) {
+	testCases := []struct {
+		key1, key2, key3    []byte
+		inp                 string
+		outp1, outp2, outp3 string
+		err                 error
+	}{
+		{key1: []byte{}, key2: []byte("wo"), key3: []byte("foo"), inp: "Hello world", outp1: "Hello world", outp2: "Hello world", outp3: "", err: nil},
+	}
+
+	for _, tc := range testCases {
+		buf1 := &bytes.Buffer{}
+		buf2 := &bytes.Buffer{}
+		buf3 := &bytes.Buffer{}
+		w := New().Add(buf1).Add(Filter(tc.key2, buf2)).Add(Filter(tc.key3, buf3)).Writer(1)
+		if _, err := w.Write([]byte(tc.inp)); err != tc.err {
+			t.Errorf("Writers.Write1(\"%v\") is \"%v\", want \"%v\".", tc.inp, err, tc.err)
+		}
+		s2 := buf2.String()
+		if s2 != tc.outp2 {
+			t.Errorf("Writers.Write1(\"%v\") = \"%v\", want \"%v\".", tc.inp, s2, tc.outp2)
+		}
+	}
+}
+
 /* Copyright 2020 Spiegel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");

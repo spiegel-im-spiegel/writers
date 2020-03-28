@@ -34,9 +34,6 @@ func (ws *Writers) Add(w io.Writer) *Writers {
 
 //Size get size of collection
 func (ws *Writers) Size() int {
-	ws.Lock()
-	defer ws.Unlock()
-
 	return len(ws.ws)
 }
 
@@ -45,7 +42,7 @@ func (ws *Writers) Writer(i int) io.Writer {
 	ws.Lock()
 	defer ws.Unlock()
 
-	if i < 0 || i <= ws.Size() {
+	if i < 0 || i >= ws.Size() {
 		return ioutil.Discard
 	}
 	return ws.ws[i]
