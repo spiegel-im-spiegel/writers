@@ -40,7 +40,7 @@ func (w *FilterWriter) match(b []byte) bool {
 	if w.word == nil {
 		return true
 	}
-	return bytes.Index(b, w.word) >= 0
+	return bytes.Contains(b, w.word)
 }
 
 //Close closes Writer
