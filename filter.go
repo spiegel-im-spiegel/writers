@@ -54,7 +54,7 @@ func (w *FilterWriter) Write(b []byte) (int, error) {
 }
 
 func (w *FilterWriter) match(b []byte) bool {
-	if len(b) == 0 {
+	if w == nil || len(b) == 0 {
 		return false
 	}
 	if w.filter == nil {
@@ -65,6 +65,9 @@ func (w *FilterWriter) match(b []byte) bool {
 
 //Close closes Writer.
 func (w *FilterWriter) Close() error {
+	if w == nil {
+		return nil
+	}
 	if c, ok := w.writer.(io.Closer); ok {
 		return c.Close()
 	}
