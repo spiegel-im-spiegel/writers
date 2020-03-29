@@ -4,25 +4,45 @@ import (
 	"bytes"
 	"io"
 	"io/ioutil"
+	"regexp"
 )
 
-//FilterWriter type is Writer with filter.
+//FilterWriter type is Writer with functional filter.
 type FilterWriter struct {
-	keyword []byte
-	writer  io.Writer
+	filter func([]byte) bool
+	writer io.Writer
 }
 
 var _ io.WriteCloser = (*FilterWriter)(nil) //FilterWriter is compatible with io.WriteCloser interface
 
-//Filter returns new FilterWriter instance.
-func Filter(w io.Writer, keyword []byte) *FilterWriter {
+//FilterFunc returns new FilterWriter instance.
+func FilterFunc(w io.Writer, filter func([]byte) bool) *FilterWriter {
 	if w == nil {
 		w = ioutil.Discard
 	}
-	if len(keyword) == 0 {
-		return &FilterWriter{keyword: nil, writer: w}
+	return &FilterWriter{filter: filter, writer: w}
+}
+
+//Filter returns new FilterWriter instance with kwyword filter.
+func Filter(w io.Writer, keyword []byte) *FilterWriter {
+	var filter func([]byte) bool
+	if len(keyword) > 0 {
+		filter = func(b []byte) bool {
+			return bytes.Contains(b, keyword)
+		}
 	}
-	return &FilterWriter{keyword: keyword, writer: w}
+	return FilterFunc(w, filter)
+}
+
+//Filter returns new FilterWriter instance with regular expression filter.
+func FilterRegexp(w io.Writer, re *regexp.Regexp) *FilterWriter {
+	var filter func([]byte) bool
+	if re != nil {
+		filter = func(b []byte) bool {
+			return re.Match(b)
+		}
+	}
+	return FilterFunc(w, filter)
 }
 
 //Write function writes bytes data.
@@ -37,10 +57,10 @@ func (w *FilterWriter) match(b []byte) bool {
 	if len(b) == 0 {
 		return false
 	}
-	if w.keyword == nil {
+	if w.filter == nil {
 		return true
 	}
-	return bytes.Contains(b, w.keyword)
+	return w.filter(b)
 }
 
 //Close closes Writer.
