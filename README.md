@@ -27,7 +27,7 @@ func main() {
     }
     defer file.Close()
 
-    logf.SetOutput(io.MultiWriter(file, writers.Regexp(regexp.MustCompile(`\[(ERROR|FATAL)\]`), os.Stdout)))
+    logf.SetOutput(io.MultiWriter(file, writers.FilterRegexp(os.Stdout, regexp.MustCompile(`\[(ERROR|FATAL)\]`))))
     for i := 0; i < 6; i++ {
         logf.SetMinLevel(logf.TRACE + logf.Level(i))
         logf.Tracef("Traceing: No. %d\n", i+1)
