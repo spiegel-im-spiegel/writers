@@ -20,7 +20,7 @@ func TestFilterWriter(t *testing.T) {
 
 	for _, tc := range testCases {
 		buf := &bytes.Buffer{}
-		w := Filter(tc.key, buf)
+		w := Filter(buf, tc.key)
 		if _, err := w.Write([]byte(tc.inp)); err != tc.err {
 			t.Errorf("fwriter.Write(\"%v\") is \"%v\", want \"%v\".", tc.inp, err, tc.err)
 		}

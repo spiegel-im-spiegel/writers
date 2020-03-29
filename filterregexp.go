@@ -6,31 +6,31 @@ import (
 	"regexp"
 )
 
-//RegexpWriter type is Writer with regular expression filter
-type RegexpWriter struct {
+//FilterRegexpWriter type is Writer with regular expression filter.
+type FilterRegexpWriter struct {
 	re     *regexp.Regexp
 	writer io.Writer
 }
 
-var _ io.WriteCloser = (*RegexpWriter)(nil) //RegexpWriter is compatible with io.WriteCloser interface
+var _ io.WriteCloser = (*FilterRegexpWriter)(nil) //FilterRegexpWriter is compatible with io.WriteCloser interface
 
-//Regexp returns new RegexpWriter instance
-func Regexp(re *regexp.Regexp, w io.Writer) *RegexpWriter {
+//Regexp returns new FilterRegexpWriter instance.
+func FilterRegexp(w io.Writer, re *regexp.Regexp) *FilterRegexpWriter {
 	if w == nil {
 		w = ioutil.Discard
 	}
-	return &RegexpWriter{re: re, writer: w}
+	return &FilterRegexpWriter{re: re, writer: w}
 }
 
 //WriteString function writes string.
-func (w *RegexpWriter) Write(b []byte) (int, error) {
+func (w *FilterRegexpWriter) Write(b []byte) (int, error) {
 	if w.match(b) {
 		return w.writer.Write(b)
 	}
 	return len(b), nil
 }
 
-func (w *RegexpWriter) match(b []byte) bool {
+func (w *FilterRegexpWriter) match(b []byte) bool {
 	if len(b) == 0 {
 		return false
 	}
@@ -41,7 +41,7 @@ func (w *RegexpWriter) match(b []byte) bool {
 }
 
 //Close closes Writer
-func (w *RegexpWriter) Close() error {
+func (w *FilterRegexpWriter) Close() error {
 	if c, ok := w.writer.(io.Closer); ok {
 		return c.Close()
 	}

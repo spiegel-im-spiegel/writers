@@ -6,26 +6,26 @@ import (
 	"io/ioutil"
 )
 
-//FilterWriter type is Writer with filter
+//FilterWriter type is Writer with filter.
 type FilterWriter struct {
-	word   []byte
-	writer io.Writer
+	keyword []byte
+	writer  io.Writer
 }
 
 var _ io.WriteCloser = (*FilterWriter)(nil) //FilterWriter is compatible with io.WriteCloser interface
 
-//Filter returns new FilterWriter instance
-func Filter(keyword []byte, w io.Writer) *FilterWriter {
+//Filter returns new FilterWriter instance.
+func Filter(w io.Writer, keyword []byte) *FilterWriter {
 	if w == nil {
 		w = ioutil.Discard
 	}
 	if len(keyword) == 0 {
-		return &FilterWriter{word: nil, writer: w}
+		return &FilterWriter{keyword: nil, writer: w}
 	}
-	return &FilterWriter{word: keyword, writer: w}
+	return &FilterWriter{keyword: keyword, writer: w}
 }
 
-//Write function writes bytes data, and compatible with io.Writer interface.
+//Write function writes bytes data.
 func (w *FilterWriter) Write(b []byte) (int, error) {
 	if w.match(b) {
 		return w.writer.Write(b)
@@ -37,13 +37,13 @@ func (w *FilterWriter) match(b []byte) bool {
 	if len(b) == 0 {
 		return false
 	}
-	if w.word == nil {
+	if w.keyword == nil {
 		return true
 	}
-	return bytes.Contains(b, w.word)
+	return bytes.Contains(b, w.keyword)
 }
 
-//Close closes Writer
+//Close closes Writer.
 func (w *FilterWriter) Close() error {
 	if c, ok := w.writer.(io.Closer); ok {
 		return c.Close()

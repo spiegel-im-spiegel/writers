@@ -22,7 +22,7 @@ func TestWriters(t *testing.T) {
 		buf1 := &bytes.Buffer{}
 		buf2 := &bytes.Buffer{}
 		buf3 := &bytes.Buffer{}
-		ws := io.MultiWriter(buf1, Filter(tc.key2, buf2), Filter(tc.key3, buf3))
+		ws := io.MultiWriter(Filter(buf1, tc.key1), Filter(buf2, tc.key2), Filter(buf3, tc.key3))
 		if _, err := ws.Write([]byte(tc.inp)); err != tc.err {
 			t.Errorf("Writers.Write(\"%v\") is \"%v\", want \"%v\".", tc.inp, err, tc.err)
 		}
@@ -41,7 +41,7 @@ func TestWriters(t *testing.T) {
 	}
 }
 
-func TestWritersString(t *testing.T) {
+func TestWriters2(t *testing.T) {
 	testCases := []struct {
 		re1, re2, re3       *regexp.Regexp
 		inp                 string
@@ -56,7 +56,7 @@ func TestWritersString(t *testing.T) {
 		buf1 := &bytes.Buffer{}
 		buf2 := &bytes.Buffer{}
 		buf3 := &bytes.Buffer{}
-		ws := io.MultiWriter(buf1, Regexp(tc.re2, buf2), Regexp(tc.re3, buf3))
+		ws := io.MultiWriter(FilterRegexp(buf1, tc.re1), FilterRegexp(buf2, tc.re2), FilterRegexp(buf3, tc.re3))
 		if _, err := ws.Write([]byte(tc.inp)); err != tc.err {
 			t.Errorf("Writers.Write(\"%v\") is \"%v\", want \"%v\".", tc.inp, err, tc.err)
 		}

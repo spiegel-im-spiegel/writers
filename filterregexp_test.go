@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func TestRegexpWriter(t *testing.T) {
+func TestFilterRegexpWriter(t *testing.T) {
 	testCases := []struct {
 		re   *regexp.Regexp
 		inp  string
@@ -22,7 +22,7 @@ func TestRegexpWriter(t *testing.T) {
 
 	for _, tc := range testCases {
 		buf := &bytes.Buffer{}
-		w := Regexp(tc.re, buf)
+		w := FilterRegexp(buf, tc.re)
 		if _, err := w.Write([]byte(tc.inp)); err != tc.err {
 			t.Errorf("fwriter.Write(\"%v\") is \"%v\", want \"%v\".", tc.inp, err, tc.err)
 		}
